@@ -1,0 +1,12 @@
+services:
+  mysql:
+    image: mysql
+    container_name: mysql_container_rasmoo
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: senha123
+      MYSQL_DATABASE: RASPLUS
+      MYSQL_USER: rasmoo
+      MYSQL_PASSWORD: senha123
+    ports:
+      - "3306:3306"
