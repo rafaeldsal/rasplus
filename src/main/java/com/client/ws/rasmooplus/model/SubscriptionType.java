@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "subscription_type")
+@Table(name = "subscriptions_type")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,8 +18,8 @@ import java.math.BigDecimal;
 public class SubscriptionType implements Serializable {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(name = "subscription_type_id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "subscriptions_type_id", unique = true, nullable = false)
   private Long id;
 
   private String name;
@@ -27,8 +27,9 @@ public class SubscriptionType implements Serializable {
   @Column(name = "access_months")
   private Integer accessMonths;
 
+  @Column(nullable = false)
   private BigDecimal price;
 
-  @Column(name = "product_key")
+  @Column(name = "product_key", unique = true)
   private String productKey;
 }
