@@ -1,10 +1,8 @@
 package com.client.ws.rasmooplus.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -12,10 +10,11 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "subscriptions_type")
 @Data
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SubscriptionType implements Serializable {
+public class SubscriptionType extends RepresentationModel<SubscriptionType> implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
