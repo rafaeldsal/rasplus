@@ -10,3 +10,20 @@ services:
       MYSQL_PASSWORD: senha123
     ports:
       - "3306:3306"
+    volumes:
+      - mysql_data_container:/data/db
+
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: rasmoo
+      MONGO_INITDB_ROOT_PASSWORD: senha123
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data_container:/data/db
+
+volumes:
+  mysql_data_container:
+  mongo_data_container:
