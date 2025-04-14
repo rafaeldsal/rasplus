@@ -7,9 +7,8 @@ public record CreditCardDto(
     Long cvv,
     String documentNumber,
     String number,
-    Long installments,
-    Long month,
-    Long year
-
+    Integer installments,
+    Integer month,
+    Integer year
 ) {
 }

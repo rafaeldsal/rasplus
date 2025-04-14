@@ -39,7 +39,7 @@ public class UserPaymentInfo implements Serializable {
   private BigDecimal price;
 
   @Column(nullable = false)
-  private Integer instalments;
+  private Integer installments;
 
   @Column(name = "dt_payment", nullable = false)
   private LocalDate dtPayment = LocalDate.now();
