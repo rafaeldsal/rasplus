@@ -2,8 +2,6 @@ package com.client.ws.rasmooplus.mapper.wsraspay;
 
 import com.client.ws.rasmooplus.dto.wsraspay.CreditCardDto;
 import com.client.ws.rasmooplus.dto.wsraspay.PaymentDto;
-import com.client.ws.rasmooplus.mapper.CreditCardMapper;
-import com.client.ws.rasmooplus.model.UserPaymentInfo;
 
 public class PaymentMapper {
 

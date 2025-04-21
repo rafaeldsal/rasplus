@@ -1,6 +1,5 @@
-package com.client.ws.rasmooplus;
+package com.client.ws.rasmooplus.dto;
 
-import com.client.ws.rasmooplus.dto.UserPaymentInfoDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

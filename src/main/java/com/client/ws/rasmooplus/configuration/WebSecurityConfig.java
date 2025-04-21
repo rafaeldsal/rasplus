@@ -1,7 +1,7 @@
 package com.client.ws.rasmooplus.configuration;
 
 import com.client.ws.rasmooplus.filter.AuthenticationFilter;
-import com.client.ws.rasmooplus.repository.UserDetailsRepository;
+import com.client.ws.rasmooplus.repository.jpa.UserDetailsRepository;
 import com.client.ws.rasmooplus.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -42,10 +42,11 @@ public class WebSecurityConfig {
         .sessionManagement(session -> session
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests((auth -> auth
-            .requestMatchers(HttpMethod.GET, "/subscription-type").permitAll()
-            .requestMatchers(HttpMethod.GET, "/subscription-type/*").permitAll()
+            .requestMatchers("/subscription-type").permitAll()
+            .requestMatchers("/subscription-type/*").permitAll()
             .requestMatchers(HttpMethod.POST, "/payment/process").permitAll()
             .requestMatchers(HttpMethod.POST, "/user").permitAll()
+            .requestMatchers("/auth/recovery-code/**").permitAll()
             .requestMatchers(HttpMethod.POST, "/auth").permitAll()
             .anyRequest().authenticated()))
         .httpBasic(Customizer.withDefaults())

@@ -1,6 +1,6 @@
 package com.client.ws.rasmooplus.service.impl;
 
-import com.client.ws.rasmooplus.PaymentProcessDto;
+import com.client.ws.rasmooplus.dto.PaymentProcessDto;
 import com.client.ws.rasmooplus.dto.wsraspay.CustomerDto;
 import com.client.ws.rasmooplus.dto.wsraspay.OrderDto;
 import com.client.ws.rasmooplus.dto.wsraspay.PaymentDto;
@@ -14,18 +14,18 @@ import com.client.ws.rasmooplus.mapper.UserPaymentInfoMapper;
 import com.client.ws.rasmooplus.mapper.wsraspay.CustomerMapper;
 import com.client.ws.rasmooplus.mapper.wsraspay.OrderMapper;
 import com.client.ws.rasmooplus.mapper.wsraspay.PaymentMapper;
-import com.client.ws.rasmooplus.model.User;
-import com.client.ws.rasmooplus.model.UserCredentials;
-import com.client.ws.rasmooplus.model.UserPaymentInfo;
-import com.client.ws.rasmooplus.model.UserType;
-import com.client.ws.rasmooplus.repository.SubscriptionTypeRepository;
-import com.client.ws.rasmooplus.repository.UserDetailsRepository;
-import com.client.ws.rasmooplus.repository.UserPaymentInfoRepository;
-import com.client.ws.rasmooplus.repository.UserRepository;
-import com.client.ws.rasmooplus.repository.UserTypeRepository;
+import com.client.ws.rasmooplus.model.jpa.User;
+import com.client.ws.rasmooplus.model.jpa.UserCredentials;
+import com.client.ws.rasmooplus.model.jpa.UserPaymentInfo;
+import com.client.ws.rasmooplus.model.jpa.UserType;
+import com.client.ws.rasmooplus.repository.jpa.SubscriptionTypeRepository;
+import com.client.ws.rasmooplus.repository.jpa.UserDetailsRepository;
+import com.client.ws.rasmooplus.repository.jpa.UserPaymentInfoRepository;
+import com.client.ws.rasmooplus.repository.jpa.UserRepository;
+import com.client.ws.rasmooplus.repository.jpa.UserTypeRepository;
 import com.client.ws.rasmooplus.service.PaymentInfoService;
+import com.client.ws.rasmooplus.utils.PasswordUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -83,7 +83,7 @@ public class PaymentInfoServiceImpl implements PaymentInfoService {
       UserType userType = userTypeRepository.findById(UserTypeEnum.ALUNO.getId())
           .orElseThrow(() -> new NotFoundException("UserType não encontrado"));
 
-      UserCredentials userCredentials = new UserCredentials(null, userOpt.getEmail(), new BCryptPasswordEncoder().encode(defaultPass), userType);
+      UserCredentials userCredentials = new UserCredentials(null, userOpt.getEmail(), PasswordUtils.encode(defaultPass), userType);
       userDetailsRepository.save(userCredentials);
 
       var subscriptionType = subscriptionTypeRepository.findByProductKey(dto.productKey())

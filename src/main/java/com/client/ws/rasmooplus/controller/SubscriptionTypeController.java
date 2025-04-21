@@ -1,7 +1,7 @@
 package com.client.ws.rasmooplus.controller;
 
 import com.client.ws.rasmooplus.dto.SubscriptionTypeDto;
-import com.client.ws.rasmooplus.model.SubscriptionType;
+import com.client.ws.rasmooplus.model.jpa.SubscriptionType;
 import com.client.ws.rasmooplus.service.SubscriptionTypeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.client.ws.rasmooplus.mapper.wsraspay;
 
-import com.client.ws.rasmooplus.PaymentProcessDto;
+import com.client.ws.rasmooplus.dto.PaymentProcessDto;
 import com.client.ws.rasmooplus.dto.wsraspay.OrderDto;
 
 public class OrderMapper {

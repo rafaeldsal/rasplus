@@ -1,6 +1,6 @@
 package com.client.ws.rasmooplus.controller;
 
-import com.client.ws.rasmooplus.PaymentProcessDto;
+import com.client.ws.rasmooplus.dto.PaymentProcessDto;
 import com.client.ws.rasmooplus.service.PaymentInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
