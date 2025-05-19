@@ -6,7 +6,6 @@ import com.client.ws.rasmooplus.dto.UserDetailsDto;
 import com.client.ws.rasmooplus.model.redis.UserRecoveryCode;
 import com.client.ws.rasmooplus.service.AuthenticationService;
 import com.client.ws.rasmooplus.service.CustomUserService;
-import com.client.ws.rasmooplus.service.impl.UserDetailsServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,7 +45,7 @@ public class AuthenticationController {
   }
 
   @PatchMapping("/recovery-code/password")
-  public ResponseEntity<?> sendRecoveryCode(@RequestBody @Valid UserDetailsDto dto) {
+  public ResponseEntity<?> updatedPasswordByRecoveryCode(@RequestBody @Valid UserDetailsDto dto) {
     customUserService.updatedPasswordByRecoveryCode(dto);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
