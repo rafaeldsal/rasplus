@@ -24,6 +24,9 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -78,9 +81,10 @@ class UserDetailsServiceTest {
 
     when(userDetailsRepository.findByUsername(username)).thenReturn(Optional.empty());
 
-    Assertions.assertThrows(UsernameNotFoundException.class, () -> {
-      userDetailsService.loadUserByUsername(username);
-    });
+    assertEquals("Usuário não encontrado",
+        assertThrows(UsernameNotFoundException.class, () ->
+            userDetailsService.loadUserByUsername(username)
+        ).getLocalizedMessage());
 
     verify(userDetailsRepository, times(1)).findByUsername(username);
   }
@@ -120,11 +124,8 @@ class UserDetailsServiceTest {
 
     // Assert
     verify(userRecoveryCodeRepository, times(1)).findByEmail(STUDENT_USERNAME);
-
     verify(userRecoveryCodeRepository, times(1)).save(any(UserRecoveryCode.class));
-
     verify(userDetailsRepository, times(1)).findByUsername(STUDENT_USERNAME);
-
     verify(mailIntegration, times(1)).send(eq(STUDENT_USERNAME), anyString(), any());
   }
 
@@ -134,7 +135,7 @@ class UserDetailsServiceTest {
     when(userRecoveryCodeRepository.findByEmail(STUDENT_USERNAME)).thenReturn(Optional.empty());
     when(userDetailsRepository.findByUsername(STUDENT_USERNAME)).thenReturn(Optional.empty());
 
-    Assertions.assertThrows(NotFoundException.class, () -> userDetailsService.sendRecoveryCode(STUDENT_USERNAME));
+    assertThrows(NotFoundException.class, () -> userDetailsService.sendRecoveryCode(STUDENT_USERNAME));
 
     verify(userRecoveryCodeRepository, times(1)).findByEmail(STUDENT_USERNAME);
     verify(userDetailsRepository, times(1)).findByUsername(STUDENT_USERNAME);
@@ -143,7 +144,7 @@ class UserDetailsServiceTest {
   }
 
   @Test
-  void given_recoveryCodeIsValid_when_userIsFound_then_returTrue() {
+  void given_recoveryCodeIsValid_when_userIsFound_then_returnTrue() {
     ReflectionTestUtils.setField(userDetailsService, "recoveryCodeTimeout", "5");
     when(userRecoveryCodeRepository.findByEmail(STUDENT_USERNAME)).thenReturn(Optional.of(getUserRecoveryCode()));
     Assertions.assertTrue(userDetailsService.recoveryCodeIsValid(RECOVERY_CODE, STUDENT_USERNAME));
@@ -157,6 +158,31 @@ class UserDetailsServiceTest {
     when(userRecoveryCodeRepository.findByEmail(STUDENT_USERNAME)).thenReturn(Optional.of(getUserRecoveryCode()));
 
     Assertions.assertFalse(userDetailsService.recoveryCodeIsValid("invalidCode", STUDENT_USERNAME));
+
+    verify(userRecoveryCodeRepository, times(1)).findByEmail(STUDENT_USERNAME);
+  }
+
+  @Test
+  void given_recoveryCodeIsValid_when_userNotFound_then_throwsNotFoundException() {
+    when(userRecoveryCodeRepository.findByEmail(STUDENT_USERNAME)).thenReturn(Optional.empty());
+
+    assertEquals("Usuário não encontrado",
+        assertThrows(NotFoundException.class, () ->
+            userDetailsService.recoveryCodeIsValid(RECOVERY_CODE, STUDENT_USERNAME)
+        ).getLocalizedMessage());
+
+    verify(userRecoveryCodeRepository, times(1)).findByEmail(STUDENT_USERNAME);
+  }
+
+  @Test
+  void given_recoveryCodeIsValid_when_expirationTimeExceeded_then_returnFalse() {
+    ReflectionTestUtils.setField(userDetailsService, "recoveryCodeTimeout", "5");
+    UserRecoveryCode userRecoveryCode = getUserRecoveryCode();
+    userRecoveryCode.setCreationDate(LocalDateTime.now().minusMinutes(20L));
+
+    when(userRecoveryCodeRepository.findByEmail(STUDENT_USERNAME)).thenReturn(Optional.of(userRecoveryCode));
+
+    assertFalse(userDetailsService.recoveryCodeIsValid(RECOVERY_CODE, STUDENT_USERNAME));
 
     verify(userRecoveryCodeRepository, times(1)).findByEmail(STUDENT_USERNAME);
   }
@@ -177,7 +203,7 @@ class UserDetailsServiceTest {
   @Test
   void given_recoveryCodeIsValid_when_userNotFound_then_throwNotFoundException() {
     when(userRecoveryCodeRepository.findByEmail(STUDENT_USERNAME)).thenReturn(Optional.empty());
-    Assertions.assertThrows(NotFoundException.class, () -> userDetailsService.recoveryCodeIsValid(RECOVERY_CODE, STUDENT_USERNAME));
+    assertThrows(NotFoundException.class, () -> userDetailsService.recoveryCodeIsValid(RECOVERY_CODE, STUDENT_USERNAME));
     verify(userRecoveryCodeRepository, times(1)).findByEmail(STUDENT_USERNAME);
   }
 
@@ -205,7 +231,7 @@ class UserDetailsServiceTest {
   void given_updatedPasswordByRecoveryCode_when_userIsNotFound_then_throwNotFoundException() {
     when(userRecoveryCodeRepository.findByEmail(STUDENT_USERNAME)).thenReturn(Optional.empty());
     UserDetailsDto dto = new UserDetailsDto(STUDENT_USERNAME, RECOVERY_CODE, "novaSenha123");
-    Assertions.assertThrows(NotFoundException.class, () -> userDetailsService.updatedPasswordByRecoveryCode(dto));
+    assertThrows(NotFoundException.class, () -> userDetailsService.updatedPasswordByRecoveryCode(dto));
     verify(userRecoveryCodeRepository, times(1)).findByEmail(STUDENT_USERNAME);
   }
 
