@@ -23,10 +23,6 @@ class UserTypeServiceTest {
   @InjectMocks
   private UserTypeServiceImpl userTypeService;
 
-  /*
-  * given_method_when_scenario_then_expectedReturn
-   */
-
   @Test
   void given_findAll_when_thereAreDatasInDataBase_then_returnAllDatas() {
     List<UserType> userTypeList = new ArrayList<>();
