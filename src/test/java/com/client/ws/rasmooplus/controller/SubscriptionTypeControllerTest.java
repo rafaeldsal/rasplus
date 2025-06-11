@@ -21,9 +21,7 @@ import java.math.BigDecimal;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -127,6 +125,76 @@ class SubscriptionTypeControllerTest {
         .andExpect(jsonPath("$.statusCode", Matchers.is(400)));
 
     verify(subscriptionTypeService, times(0)).create(dto);
+  }
+
+  @Test
+  void given_update_when_dtoIsValid_then_returnSubscriptionTypeUpdated() throws Exception {
+    SubscriptionType subscriptionType = SubscriptionType.builder()
+            .id(2L)
+            .name("VITALICIO")
+            .accessMonths(null)
+            .price(BigDecimal.valueOf(997))
+            .productKey("FOREVER2025")
+            .build();
+
+    SubscriptionTypeDto dto = SubscriptionTypeDto.builder()
+            .id(2L)
+            .accessMonths(null)
+            .name("VITALICIO")
+            .price(BigDecimal.valueOf(997))
+            .productKey("FOREVER2025")
+            .build();
+
+    when(subscriptionTypeService.update(2L, dto)).thenReturn(subscriptionType);
+
+    mockMvc.perform(put("/subscription-type/2")
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id", Matchers.notNullValue()));
+
+    verify(subscriptionTypeService, times(1)).update(2L, dto);
+  }
+
+  @Test
+  void given_update_when_dtoIsMissingValues_then_returnBadRequest() throws Exception {
+    SubscriptionTypeDto dto = SubscriptionTypeDto.builder()
+            .id(null)
+            .accessMonths(13L)
+            .name("")
+            .price(null)
+            .productKey("22")
+            .build();
+
+    mockMvc.perform(put("/subscription-type/2")
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message", Matchers.is("[price=não pode ser nulo, accessMonths=não pode ser maior que 12, name=campo 'name' deve ter tamanho entre 5 e 30, productKey=deve ter tamanho entre 5 e 15]")))
+            .andExpect(jsonPath("$.status", Matchers.is("BAD_REQUEST")))
+            .andExpect(jsonPath("$.statusCode", Matchers.is(400)));
+
+    verify(subscriptionTypeService, times(0)).update(2L, dto);
+  }
+
+  @Test
+  void given_update_when_idIsNull_then_returnBadRequest() throws Exception {
+    SubscriptionTypeDto dto = SubscriptionTypeDto.builder()
+            .id(null)
+            .accessMonths(13L)
+            .name("")
+            .price(null)
+            .productKey("22")
+            .build();
+
+    mockMvc.perform(put("/subscription-type/null")
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isBadRequest());
+
+    verify(subscriptionTypeService, times(0)).update(null, dto);
   }
 
 }
